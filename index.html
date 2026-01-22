@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Performance Dashboard</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+    <div class="dashboard-container">
+        
+        <div class="header-section">
+            <div class="header-title">
+                <h1>Made By : KHA2LIL</h1>
+                <p>3rd Year GL • Semester 5</p>
+            </div>
+            <button onclick="toggleTheme()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">🌗</button>
+        </div>
+
+        <div class="card widget-grade">
+            <h2>Semester Final Grades</h2>
+            <div style="display: flex; align-items: baseline; gap: 0.5rem;">
+                <span id="finalScore" class="big-number">00.00</span>
+                <span style="color: var(--text-muted);">/ 20</span>
+            </div>
+            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--text-muted);">
+                Weighted Average
+            </p>
+        </div>
+
+        <div class="card widget-status">
+            <h2>Academic Recommendations</h2>
+            <div id="statusBadge" class="status-badge">
+                PENDING
+            </div>
+            <p id="statusMsg" style="margin-top: 1rem; font-size: 0.9rem;">
+                Complete all fields
+            </p>
+        </div>
+
+        <div class="card widget-analytics">
+            <h2>Performance Analytics</h2>
+            <div class="unit-bar-container">
+                <div class="unit-label">
+                    <span>Fundamental (U1)</span>
+                    <span id="u1-score">0.00</span>
+                </div>
+                <div class="progress-bg"><div id="u1-bar" class="progress-fill"></div></div>
+            </div>
+            <div class="unit-bar-container">
+                <div class="unit-label">
+                    <span>Methodological (U2)</span>
+                    <span id="u2-score">0.00</span>
+                </div>
+                <div class="progress-bg"><div id="u2-bar" class="progress-fill"></div></div>
+            </div>
+            <div class="unit-bar-container">
+                <div class="unit-label">
+                    <span>Transversal (U3)</span>
+                    <span id="u3-score">0.00</span>
+                </div>
+                <div class="progress-bg"><div id="u3-bar" class="progress-fill"></div></div>
+            </div>
+        </div>
+
+        <div class="card widget-table">
+            <h2>Course Breakdown</h2>
+            <table id="gradeTable">
+                <thead>
+                    <tr>
+                        <th>Module</th>
+                        <th>Coeff</th>
+                        <th>TD (40%)</th>
+                        <th>Exam (60%)</th>
+                        <th>Avg</th>
+                    </tr>
+                </thead>
+                <tbody id="tableBody">
+                    </tbody>
+            </table>
+        </div>
+
+    </div>
+
+    <script src="js/units.js"></script>
+    <script src="js/home.js"></script>
+</body>
+</html>
