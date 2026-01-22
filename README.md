@@ -15,4 +15,4 @@ A modern, high-performance grade calculator and analytics tool designed specific
 - **LocalStorage API** (For data saving)
 
 ## 🚀 Deployment
-Live at: []
+Live at: [https://kha2alil.github.io/GL-S5/]
