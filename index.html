@@ -1,89 +1,155 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="en" data-theme="dark" data-semester="s5">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Performance Dashboard</title>
+    <title>Student Performance Dashboard — GL S5 / S6</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
-    <div class="dashboard-container">
-        
-        <div class="header-section">
-            <div class="header-title">
-                <h1>Made By : KHA2LIL</h1>
-                <p>3rd Year GL • Semester 5</p>
-            </div>
-            <button onclick="toggleTheme()" style="background:none; border:none; font-size:1.5rem; cursor:pointer;">🌗</button>
+<div class="dashboard-container">
+
+    <!-- ═══════════════════════════════════════════════
+         HEADER
+         ─ Author info, semester switcher, theme toggle
+    ════════════════════════════════════════════════ -->
+    <div class="header-section">
+
+        <div class="header-title">
+            <h1>Made By : KHA2LIL</h1>
+            <!-- Updated dynamically by home.js -->
+            <p id="semesterSubtitle">3rd Year GL · S5</p>
         </div>
 
-        <div class="card widget-grade">
-            <h2>Semester Final Grades</h2>
-            <div style="display: flex; align-items: baseline; gap: 0.5rem;">
-                <span id="finalScore" class="big-number">00.00</span>
-                <span style="color: var(--text-muted);">/ 20</span>
-            </div>
-            <p style="margin: 0.5rem 0 0 0; font-size: 0.9rem; color: var(--text-muted);">
-                Weighted Average
-            </p>
-        </div>
+        <div class="header-controls">
 
-        <div class="card widget-status">
-            <h2>Academic Recommendations</h2>
-            <div id="statusBadge" class="status-badge">
-                PENDING
+            <!-- Semester switcher pills
+                 data-sem must match a key in semesterData (units.js) -->
+            <div class="sem-switcher" role="tablist" aria-label="Semester selector">
+                <button
+                    class="sem-btn active"
+                    data-sem="s5"
+                    onclick="switchSemester('s5')"
+                    role="tab"
+                    aria-selected="true"
+                    title="Semester 5">
+                    S5
+                </button>
+                <button
+                    class="sem-btn"
+                    data-sem="s6"
+                    onclick="switchSemester('s6')"
+                    role="tab"
+                    aria-selected="false"
+                    title="Semester 6">
+                    S6
+                </button>
             </div>
-            <p id="statusMsg" style="margin-top: 1rem; font-size: 0.9rem;">
-                Complete all fields
-            </p>
-        </div>
 
-        <div class="card widget-analytics">
-            <h2>Performance Analytics</h2>
-            <div class="unit-bar-container">
-                <div class="unit-label">
-                    <span>Fundamental (U1)</span>
-                    <span id="u1-score">0.00</span>
-                </div>
-                <div class="progress-bg"><div id="u1-bar" class="progress-fill"></div></div>
-            </div>
-            <div class="unit-bar-container">
-                <div class="unit-label">
-                    <span>Methodological (U2)</span>
-                    <span id="u2-score">0.00</span>
-                </div>
-                <div class="progress-bg"><div id="u2-bar" class="progress-fill"></div></div>
-            </div>
-            <div class="unit-bar-container">
-                <div class="unit-label">
-                    <span>Transversal (U3)</span>
-                    <span id="u3-score">0.00</span>
-                </div>
-                <div class="progress-bg"><div id="u3-bar" class="progress-fill"></div></div>
-            </div>
-        </div>
+            <!-- Reset grades for current semester -->
+            <button class="reset-btn" onclick="resetCurrentSemester()" title="Reset grades for this semester">
+                ↺ Reset
+            </button>
 
-        <div class="card widget-table">
-            <h2>Course Breakdown</h2>
-            <table id="gradeTable">
-                <thead>
-                    <tr>
-                        <th>Module</th>
-                        <th>Coeff</th>
-                        <th>TD (40%)</th>
-                        <th>Exam (60%)</th>
-                        <th>Avg</th>
-                    </tr>
-                </thead>
-                <tbody id="tableBody">
-                    </tbody>
-            </table>
-        </div>
+            <!-- Theme toggle -->
+            <button class="theme-btn" onclick="toggleTheme()" aria-label="Toggle dark/light theme">
+                🌗
+            </button>
 
+        </div>
     </div>
 
-    <script src="js/units.js"></script>
-    <script src="js/home.js"></script>
+    <!-- ═══════════════════════════════════════════════
+         WIDGET 1 — Semester Final Grade
+    ════════════════════════════════════════════════ -->
+    <div class="card widget-grade">
+        <h2>Semester Final Grade</h2>
+
+        <div class="score-display">
+            <span id="finalScore" class="big-number">—</span>
+            <span class="score-denom">/ 20</span>
+        </div>
+
+        <p class="score-sub">Weighted average across all modules</p>
+
+        <!-- Semester label pill (updated by JS) -->
+        <div class="semester-pill">
+            <span class="semester-pill-dot"></span>
+            <span id="semesterLabel">Semester 5</span>
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         WIDGET 2 — Academic Status
+    ════════════════════════════════════════════════ -->
+    <div class="card widget-status">
+        <h2>Academic Recommendation</h2>
+
+        <div id="statusBadge" class="status-badge pending">
+            PENDING
+        </div>
+
+        <p id="statusMsg">
+            Enter your grades to see your academic standing.
+        </p>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         WIDGET 3 — Performance Analytics
+         Unit progress bars are injected here by
+         renderAnalytics() in home.js — fully dynamic,
+         so they adapt to both S5 (3 units) and S6 (2 units).
+    ════════════════════════════════════════════════ -->
+    <div class="card widget-analytics">
+        <h2>Performance Analytics</h2>
+        <div id="analyticsContainer">
+            <!-- Populated dynamically by renderAnalytics() -->
+        </div>
+    </div>
+
+    <!-- ═══════════════════════════════════════════════
+         WIDGET 4 — Course Breakdown Table
+         Rows are injected by renderTable() in home.js.
+    ════════════════════════════════════════════════ -->
+    <div class="card widget-table">
+        <h2>Course Breakdown</h2>
+        <table id="gradeTable" aria-label="Grade input table">
+            <thead>
+                <tr>
+                    <th>Module</th>
+                    <th>Coeff</th>
+                    <th>TD</th>
+                    <th>Exam</th>
+                    <th>Avg</th>
+                </tr>
+            </thead>
+            <tbody id="tableBody">
+                <!-- Populated dynamically by renderTable() -->
+            </tbody>
+        </table>
+    </div>
+
+</div>
+
+<!-- ═══════════════════════════════════════════════
+     CONFIRM MODAL — replaces native confirm()
+     ════════════════════════════════════════════════ -->
+<div id="confirmOverlay" class="modal-overlay hidden">
+    <div class="modal-content" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <div class="modal-icon">⚠️</div>
+        <h3 id="modalTitle" class="modal-title">Reset Grades</h3>
+        <p id="modalMessage" class="modal-message">Are you sure?</p>
+        <div class="modal-actions">
+            <button id="modalCancel" class="modal-btn modal-btn-cancel">Cancel</button>
+            <button id="modalConfirm" class="modal-btn modal-btn-confirm">Reset</button>
+        </div>
+    </div>
+</div>
+
+<!-- units.js must load first — defines semesterData used by home.js -->
+<script src="js/units.js"></script>
+<script src="js/home.js"></script>
+
 </body>
 </html>
