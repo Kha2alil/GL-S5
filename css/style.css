@@ -1,0 +1,609 @@
+/* ═══════════════════════════════════════════════════════════════
+   style.css — Student Performance Dashboard (Redesign)
+   Multi-semester edition · Dark default
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── Google Fonts ────────────────────────────────────────────── */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap');
+
+/* ─── Design Tokens ──────────────────────────────────────────── */
+:root {
+    --bg-body:      #f0f2f5;
+    --bg-card:      rgba(255,255,255,0.75);
+    --bg-card-solid:#ffffff;
+    --bg-input:     #f8f9fb;
+
+    --text-main:    #1a1a2e;
+    --text-muted:   #64748b;
+    --text-subtle:  #94a3b8;
+
+    --border:       rgba(226,232,240,0.6);
+    --shadow:       0 4px 20px rgba(0,0,0,0.06);
+    --shadow-lg:    0 12px 40px rgba(0,0,0,0.08);
+    --shadow-glow:  0 0 0 1px rgba(255,255,255,0.5);
+
+    --success:      #10b981;
+    --danger:       #ef4444;
+    --success-bg:   rgba(16,185,129,0.12);
+    --success-text: #059669;
+    --danger-bg:    rgba(239,68,68,0.12);
+    --danger-text:  #dc2626;
+    --pending-bg:   rgba(100,116,139,0.1);
+    --pending-text: #64748b;
+
+    --accent-s5:    #6366f1;
+    --accent-s6:    #06b6d4;
+    --primary:      var(--accent-s5);
+
+    --radius-sm:    8px;
+    --radius-md:    14px;
+    --radius-lg:    20px;
+    --radius-pill:  999px;
+
+    --gradient-card: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(255,255,255,0.5));
+    --gradient-body: linear-gradient(135deg, #f0f2f5 0%, #e2e8f0 100%);
+}
+
+[data-semester="s5"] { --primary: var(--accent-s5); }
+[data-semester="s6"] { --primary: var(--accent-s6); }
+
+/* ─── Dark Theme ─────────────────────────────────────────────── */
+[data-theme="dark"] {
+    --bg-body:      #0a0f1e;
+    --bg-card:      rgba(30,41,59,0.7);
+    --bg-card-solid:#1e293b;
+    --bg-input:     rgba(15,23,42,0.8);
+
+    --text-main:    #e2e8f0;
+    --text-muted:   #94a3b8;
+    --text-subtle:  #64748b;
+
+    --border:       rgba(51,65,85,0.5);
+    --shadow:       0 4px 20px rgba(0,0,0,0.25);
+    --shadow-lg:    0 12px 40px rgba(0,0,0,0.35);
+    --shadow-glow:  0 0 0 1px rgba(255,255,255,0.06);
+
+    --success-bg:   rgba(16,185,129,0.15);
+    --success-text: #34d399;
+    --danger-bg:    rgba(239,68,68,0.15);
+    --danger-text:  #f87171;
+    --pending-bg:   rgba(148,163,184,0.1);
+    --pending-text: #94a3b8;
+
+    --gradient-card: linear-gradient(135deg, rgba(30,41,59,0.85), rgba(30,41,59,0.5));
+    --gradient-body: linear-gradient(135deg, #0a0f1e 0%, #0f172a 100%);
+}
+
+/* ─── Base ───────────────────────────────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; }
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Outfit', system-ui, sans-serif;
+    background: var(--gradient-body);
+    background-attachment: fixed;
+    color: var(--text-main);
+    margin: 0;
+    padding: 24px 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    min-height: 100vh;
+}
+
+/* ─── Scrollbar ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+    background: var(--text-subtle);
+    border-radius: var(--radius-pill);
+}
+::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+/* ─── Dashboard Grid ─────────────────────────────────────────── */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-template-areas:
+        "header  header  header"
+        "grade   status  analytics"
+        "table   table   table";
+    gap: 20px;
+}
+
+/* ─── Header ─────────────────────────────────────────────────── */
+.header-section {
+    grid-area: header;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.header-title h1 {
+    margin: 0;
+    font-size: 1.4rem;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    background: linear-gradient(135deg, var(--primary), var(--accent-s6));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+
+.header-title p {
+    margin: 2px 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.header-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* ─── Semester Switcher ──────────────────────────────────────── */
+.sem-switcher {
+    display: flex;
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-pill);
+    padding: 3px;
+    gap: 3px;
+    box-shadow: var(--shadow);
+}
+
+.sem-btn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 600;
+    padding: 6px 16px;
+    border-radius: var(--radius-pill);
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    background: transparent;
+    transition: all 0.25s ease;
+    white-space: nowrap;
+}
+
+.sem-btn:hover:not(.active) {
+    background: var(--bg-input);
+    color: var(--text-main);
+}
+
+.sem-btn.active {
+    background: var(--primary);
+    color: #fff;
+    box-shadow: 0 2px 12px color-mix(in srgb, var(--primary) 40%, transparent);
+}
+
+/* ─── Action Buttons ─────────────────────────────────────────── */
+.theme-btn, .reset-btn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--border);
+    background: var(--bg-card);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    color: var(--text-muted);
+    cursor: pointer;
+    transition: all 0.25s ease;
+    box-shadow: var(--shadow);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.theme-btn {
+    width: 38px;
+    height: 38px;
+    font-size: 1.1rem;
+}
+
+.theme-btn:hover, .reset-btn:hover {
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-lg);
+}
+
+.reset-btn:hover {
+    border-color: var(--danger);
+    color: var(--danger-text);
+}
+
+/* ─── Cards ──────────────────────────────────────────────────── */
+.card {
+    background: var(--gradient-card);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    box-shadow: var(--shadow), var(--shadow-glow);
+    border: 1px solid var(--border);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg), var(--shadow-glow);
+}
+
+.card h2 {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-subtle);
+    margin: 0 0 16px 0;
+}
+
+.widget-grade     { grid-area: grade; }
+.widget-status    { grid-area: status; }
+.widget-analytics { grid-area: analytics; }
+.widget-table     { grid-area: table; overflow-x: auto; }
+
+/* ─── Final Score Widget ─────────────────────────────────────── */
+.score-display {
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+    margin-bottom: 4px;
+}
+
+.big-number {
+    font-size: 3rem;
+    font-weight: 800;
+    font-family: 'JetBrains Mono', monospace;
+    line-height: 1;
+    color: var(--text-main);
+    transition: color 0.3s;
+}
+
+.big-number.pass { color: var(--success); }
+.big-number.fail { color: var(--danger); }
+
+.score-denom {
+    font-size: 1rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.score-sub {
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    margin: 6px 0 0;
+}
+
+.semester-pill {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-top: 10px;
+    background: color-mix(in srgb, var(--primary) 12%, transparent);
+    color: var(--primary);
+    border-radius: var(--radius-pill);
+    padding: 3px 12px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    border: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.semester-pill-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--primary);
+    box-shadow: 0 0 6px color-mix(in srgb, var(--primary) 60%, transparent);
+}
+
+/* ─── Status Badge Widget ────────────────────────────────────── */
+.status-badge {
+    display: inline-block;
+    padding: 7px 18px;
+    border-radius: var(--radius-pill);
+    font-size: 0.8rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    transition: all 0.3s;
+}
+
+.status-badge.pending  { background: var(--pending-bg);  color: var(--pending-text); }
+.status-badge.admitted { background: var(--success-bg);  color: var(--success-text); }
+.status-badge.adjourned{ background: var(--danger-bg);   color: var(--danger-text);  }
+
+#statusMsg {
+    margin: 12px 0 0;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+/* ─── Analytics / Unit Bars ──────────────────────────────────── */
+.unit-bar-container { margin-bottom: 16px; }
+.unit-bar-container:last-child { margin-bottom: 0; }
+
+.unit-label {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8rem;
+    margin-bottom: 6px;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.unit-tag {
+    display: inline-block;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--primary) 14%, transparent);
+    color: var(--primary);
+    border-radius: var(--radius-pill);
+    padding: 1px 8px;
+    margin-left: 5px;
+    letter-spacing: 0.05em;
+}
+
+.unit-score-val {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.progress-bg {
+    height: 10px;
+    background: var(--border);
+    border-radius: var(--radius-pill);
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: var(--primary);
+    border-radius: var(--radius-pill);
+    transition: width 0.5s cubic-bezier(.4,0,.2,1),
+                background-color 0.3s;
+}
+
+/* ─── Grade Table ────────────────────────────────────────────── */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 480px;
+    font-size: 0.88rem;
+}
+
+thead th {
+    text-align: left;
+    padding: 12px 14px;
+    border-bottom: 2px solid var(--border);
+    color: var(--text-subtle);
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+}
+
+tbody td {
+    padding: 10px 14px;
+    border-bottom: 1px solid var(--border);
+    vertical-align: middle;
+}
+
+.mod-name {
+    font-weight: 600;
+    color: var(--text-main);
+}
+
+.mod-coeff {
+    color: var(--text-muted);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+}
+
+.mod-avg {
+    font-family: 'JetBrains Mono', monospace;
+    font-weight: 700;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.mod-avg.pass { color: var(--success); }
+.mod-avg.fail { color: var(--danger);  }
+
+.unit-row td {
+    background: color-mix(in srgb, var(--primary) 8%, transparent);
+    padding: 8px 14px;
+    border-bottom: 1px solid color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.unit-row-label {
+    font-weight: 700;
+    font-size: 0.82rem;
+    color: var(--primary);
+    letter-spacing: 0.01em;
+}
+
+.unit-row-tag {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: color-mix(in srgb, var(--primary) 18%, transparent);
+    color: var(--primary);
+    border-radius: var(--radius-pill);
+    padding: 1px 8px;
+    vertical-align: middle;
+    letter-spacing: 0.06em;
+}
+
+.weight-hint {
+    display: inline-block;
+    font-size: 0.68rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text-subtle);
+    margin-left: 4px;
+    vertical-align: middle;
+    user-select: none;
+}
+
+/* ─── Grade Inputs ───────────────────────────────────────────── */
+.grade-input {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    width: 68px;
+    padding: 7px 8px;
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    color: var(--text-main);
+    text-align: center;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    -moz-appearance: textfield;
+}
+
+.grade-input:focus {
+    outline: none;
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary) 20%, transparent);
+}
+
+.grade-input::-webkit-outer-spin-button,
+.grade-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+/* ─── Confirm Modal ──────────────────────────────────────────── */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    opacity: 1;
+    transition: opacity 0.25s ease;
+}
+
+.modal-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    background: var(--bg-card-solid);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 32px 28px 24px;
+    max-width: 380px;
+    width: 90%;
+    text-align: center;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    transform: scale(1);
+    transition: transform 0.25s ease;
+}
+
+.modal-overlay.hidden .modal-content {
+    transform: scale(0.92);
+}
+
+.modal-icon {
+    font-size: 2.4rem;
+    margin-bottom: 12px;
+}
+
+.modal-title {
+    margin: 0 0 8px;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--text-main);
+}
+
+.modal-message {
+    margin: 0 0 24px;
+    font-size: 0.88rem;
+    color: var(--text-muted);
+    line-height: 1.5;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+}
+
+.modal-btn {
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.82rem;
+    font-weight: 600;
+    padding: 10px 24px;
+    border-radius: var(--radius-pill);
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    flex: 1;
+}
+
+.modal-btn-cancel {
+    background: color-mix(in srgb, var(--text-muted) 12%, transparent);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+.modal-btn-cancel:hover {
+    background: color-mix(in srgb, var(--text-muted) 20%, transparent);
+}
+
+.modal-btn-confirm {
+    background: var(--danger);
+    color: #fff;
+}
+
+.modal-btn-confirm:hover {
+    background: #dc2626;
+    box-shadow: 0 4px 16px rgba(239,68,68,0.35);
+}
+
+/* ─── Responsive Layout ──────────────────────────────────────── */
+@media (max-width: 900px) {
+    .dashboard-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "header"
+            "grade"
+            "status"
+            "analytics"
+            "table";
+    }
+
+    .header-controls { width: 100%; justify-content: flex-end; }
+    .big-number { font-size: 2.4rem; }
+    table { font-size: 0.82rem; }
+    .grade-input { width: 55px; font-size: 0.8rem; }
+    body { padding: 16px 12px; }
+    .card { padding: 18px; }
+}
+
+@media (max-width: 500px) {
+    .sem-btn { padding: 5px 11px; }
+    .header-title h1 { font-size: 1.1rem; }
+}
